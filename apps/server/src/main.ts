@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
+import { connect } from './app/db/Connection';
 
 const app = express();
 const server = http.createServer(app);
@@ -20,7 +21,14 @@ io.on('connection', (socket) => {
 
 const port = process.env.port || 3333;
 
-server.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
+//Connect to database
+connect().then(() => server.emit('ready'));
+
+//Once connection is established - launch server
+server.once('ready', () => {
+  server.listen(port, () => {
+    console.log(`Listening at http://localhost:${port}/api`);
+  });
 });
-server.on('error', console.error);
+
+server.on('error', console.error.bind(console));

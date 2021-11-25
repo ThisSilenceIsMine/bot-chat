@@ -29,7 +29,8 @@
     "serve": {
       "executor": "@nrwl/node:execute",
       "options": {
-        "buildTarget": "server:build"
+        "buildTarget": "server:build",
+        "args": ["-r dotenv/config"]
       }
     },
     "lint": {
