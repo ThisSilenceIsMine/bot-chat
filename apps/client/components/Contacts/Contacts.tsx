@@ -19,6 +19,9 @@ export const Contacts = () => {
           <ContactItem name="Juan" isOnline />
           <ContactItem name="Juan" isOnline />
           <ContactItem name="Juan" isOnline />
+          <ContactItem name="Juan" isOnline />
+          <ContactItem name="Juan" isOnline />
+          <ContactItem name="Juan" isOnline />
         </TabPanel>
         <TabPanel>Hello!</TabPanel>
       </Tabs>
@@ -30,8 +33,8 @@ export const Contacts = () => {
 const Container = styled.div`
   position: relative;
   width: 100%;
-  max-height: 100%;
-  height: 500px;
+  height: 100%;
+  background: white;
   grid-column-start: 4;
   grid-column-end: 5;
   grid-row-start: 1;
@@ -40,12 +43,20 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   & .react-tabs {
-    max-height: 85%;
+    height: 90%;
   }
 
   & .react-tabs > div {
-    max-height: 80%;
+    max-height: 85%;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
+  }
+
+  @media screen and (max-width: 1140px) {
+    & .react-tabs > div {
+      max-height: 93%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
   }
 `;

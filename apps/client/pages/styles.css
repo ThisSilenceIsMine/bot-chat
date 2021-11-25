@@ -9,3 +9,13 @@
   /* background-color: rgb(88, 102, 112); */
   background-color: rgb(221, 221, 221);
 }
+
+@media screen and (max-width: 1140px) {
+  .app {
+    display: flex;
+    flex-direction: column;
+  }
+  .app > header {
+    display: none;
+  }
+}

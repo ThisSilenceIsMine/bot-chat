@@ -21,7 +21,7 @@ const H = styled.h1`
   font-weight: 600;
   margin-left: 80px;
   margin-top: calc(60px - 1em);
-  @media (max-width: 500px) {
+  @media screen and (max-width: 500px) {
     margin-left: min(5%, 80px);
   }
 `;
