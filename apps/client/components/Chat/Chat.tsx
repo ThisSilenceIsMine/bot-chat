@@ -16,7 +16,15 @@ export const Chat = ({ className }: ChatProps) => {
           content="
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque eveniet nihil debitis expedita, quo id. Non animi quia qui eius voluptate adipisci delectus cumque est rem, totam, enim architecto magnam."
         />
+        <Message sender="me" isSeen content="Hello, darkness!" />
+        <Message sender="me" isSeen content="Hello, darkness!" />
+        <Message sender="me" isSeen content="Hello, darkness!" />
+        <Message sender="me" isSeen content="Hello, darkness!" />
+        <Message sender="me" isSeen content="Hello, darkness!" />
+        <Message sender="me" isSeen content="Hello, darkness!" />
+        <Message sender="me" isSeen content="Hello, darkness!" />
       </MessageContainer>
+
       <Controls>
         <StyledInput placeholder="Start chatting!" />
         <SendButton> Send Message </SendButton>
@@ -47,6 +55,9 @@ const MessageContainer = styled.div`
   justify-content: flex-start;
   gap: 10px;
   height: 80%;
+  max-height: calc(80%);
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const StyledInput = styled(Input)`
