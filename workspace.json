@@ -3,6 +3,6 @@
   "projects": {
     "client": "apps/client",
     "server": "apps/server",
-    "types": "libs/types"
+    "shared-types": "libs/shared-types"
   }
 }

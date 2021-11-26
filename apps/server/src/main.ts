@@ -3,10 +3,15 @@ import * as http from 'http';
 import { Server } from 'socket.io';
 import { connect } from './app/db/Connection';
 
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '@bot-chat/shared-types';
+
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(server);
 
 app.get('/api', (req, res) => {
   res.sendFile(__dirname + '/assets/index.html');
