@@ -1,9 +1,21 @@
 import styled from '@emotion/styled';
+import dynamic from 'next/dynamic';
 import { ContactItem } from './ContactItem/ContactItem';
-import { Tab, TabPanel, TabList, Tabs } from 'react-tabs';
+import { Tab, TabPanel, TabList, TabsProps } from 'react-tabs';
 import { Input } from '../Input';
+import { UserContact } from '@bot-chat/shared-types';
 
-export const Contacts = () => {
+//Import Tabs dynamically to disable ssr (whitch results in error messages)
+const Tabs = dynamic<TabsProps>(
+  () => import('react-tabs').then((mod) => mod.Tabs),
+  { ssr: false }
+);
+interface ContactsProps {
+  contacts: UserContact[];
+  myName: string;
+}
+
+export const Contacts = ({ contacts, myName }: ContactsProps) => {
   return (
     <Container>
       <Tabs>
@@ -12,16 +24,16 @@ export const Contacts = () => {
           <Tab>All</Tab>
         </TabList>
         <TabPanel>
-          <ContactItem name="Pablo" />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
-          <ContactItem name="Juan" isOnline />
+          {contacts
+            .filter((x) => x.name !== myName)
+            .map((contact) => (
+              <ContactItem
+                key={contact.name}
+                name={contact.name}
+                avatar={contact.avatar}
+                isOnline={contact.isOnline}
+              />
+            ))}
         </TabPanel>
         <TabPanel>Hello!</TabPanel>
       </Tabs>

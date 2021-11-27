@@ -50,7 +50,7 @@ export const connectionHandler = async (
   socket.emit('userData', name, avatar);
 
   const contacts = await contactsList();
-
+  console.log(contacts);
   if (contacts) {
     socket.emit('contacts', contacts);
   } else {
@@ -69,6 +69,6 @@ export const connectionHandler = async (
 function generateUser() {
   return {
     name: chance.name(),
-    avatar: (Math.random() * 1050).toString(),
+    avatar: Math.floor(Math.random() * 1050).toString(),
   };
 }

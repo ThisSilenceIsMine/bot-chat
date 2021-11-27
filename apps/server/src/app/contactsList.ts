@@ -4,17 +4,24 @@ import { UserModel } from './db/UserSchema';
 import { connectionsMap } from './connectionsMap';
 
 const allUsers = async (): Promise<UserContact[]> => {
-  return UserModel.find({}).select('name avatar');
+  return UserModel.find({}).select(['name', 'avatar']);
 };
 
 export const contactsList = async () => {
   try {
     const users = await allUsers();
 
-    return users.map((user) => ({
-      ...user,
-      status: connectionsMap.has(user.name),
-    }));
+    const res = users.map((user) => {
+      return {
+        name: user.name,
+        avatar: user.avatar,
+        isOnline: connectionsMap.has(user.name),
+      };
+    });
+
+    // console.log(res);
+
+    return res;
   } catch (error) {
     console.error(error);
 

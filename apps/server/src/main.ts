@@ -12,11 +12,13 @@ import { connectionHandler } from './app/handlers/incomingConnection';
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server<ClientToServerEvents, ServerToClientEvents>(server);
-
-app.get('/api', (req, res) => {
-  res.sendFile(__dirname + '/assets/index.html');
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
+  cors: { origin: '*' },
 });
+
+// app.get('/api', (req, res) => {
+//   res.sendFile(__dirname + '/assets/index.html');
+// });
 
 io.on('connection', (socket) => {
   console.log('a user connected');

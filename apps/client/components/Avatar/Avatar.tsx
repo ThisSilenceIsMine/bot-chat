@@ -9,7 +9,10 @@ export interface AvatarProps {
   loader?: (props: ImageLoaderProps) => string;
 }
 
-const Image = styled(NextImage)<{ isRounded?: boolean }>`
+//Define shouldForwardProp since isRounded shouldn't be passed to NextImage
+const Image = styled(NextImage, {
+  shouldForwardProp: (prop) => prop !== 'isRounded',
+})<{ isRounded?: boolean }>`
   border-radius: ${(props) => (props.isRounded ? '5%' : undefined)};
 `;
 

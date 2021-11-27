@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from 'lib/theme';
+import { theme } from '../../../lib/theme';
 import { Arrow } from './Arrow';
 
 export interface MessageProps {
@@ -38,7 +38,7 @@ const Container = styled.div<{ isLeft?: boolean }>`
   display: flex;
   flex-direction: column;
 
-  & > div {
+  & > div:first-child {
     background-color: ${(props) =>
       props.isLeft ? theme.colors.recievedMessage : theme.colors.sentMessage};
   }
@@ -54,7 +54,7 @@ const Title = styled.div`
   background-color: gray;
 `;
 
-const Text = styled.p`
+const Text = styled.div`
   position: relative;
   display: inline-block;
   width: 100%;

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { Input } from 'components/Input';
-import { theme } from 'lib/theme';
+import { Input } from '../Input';
+import { theme } from '../../lib/theme';
 import { Message } from './Message/Message';
 
 export interface ChatProps {
@@ -54,8 +54,8 @@ const MessageContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   gap: 10px;
-  height: 80%;
-  max-height: calc(80%);
+  height: 85%;
+  /* max-height: calc(80%); */
   overflow-y: auto;
   overflow-x: hidden;
 `;

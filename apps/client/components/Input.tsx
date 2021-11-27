@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from 'lib/theme';
+import { theme } from '../lib/theme';
 
 export const Input = styled.input`
   font-family: 'Open Sans';

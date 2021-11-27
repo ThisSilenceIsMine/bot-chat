@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "baseUrl": ".",
+    // "baseUrl": ".",
     "jsxImportSource": "@emotion/react",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

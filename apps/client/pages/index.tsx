@@ -1,14 +1,19 @@
 import styled from '@emotion/styled';
-
-import { UserInfo as _UserInfo } from 'components/UserInfo';
-import { Contacts } from 'components/Contacts';
-import { Chat as _Chat } from 'components/Chat';
+import { UserInfo as _UserInfo } from '../components/UserInfo';
+import { Contacts } from '../components/Contacts';
+import { Chat as _Chat } from '../components/Chat';
+import { useChat } from '../lib/hooks/useChat';
 
 export function Index() {
+  const { userData, contacts } = useChat();
+
   return (
     <StyledPage>
-      <UserInfo />
-      <Contacts />
+      <UserInfo
+        name={userData?.name ?? 'None'}
+        avatar={userData?.avatar ?? '0'}
+      />
+      <Contacts myName={userData?.name} contacts={contacts ?? []} />
       <Chat />
     </StyledPage>
   );

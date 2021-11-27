@@ -1,18 +1,20 @@
 import styled from '@emotion/styled';
-import { Avatar } from 'components/Avatar/Avatar';
-import { theme } from 'lib/theme';
+import { Avatar } from '../../Avatar/Avatar';
+import { theme } from '../../../lib/theme';
 
 export interface ContactItemProps {
   name: string;
+  avatar: string;
   isOnline?: boolean;
   isSelected?: boolean;
 }
 
-export const ContactItem = ({ name, isOnline }: ContactItemProps) => {
+export const ContactItem = ({ name, isOnline, avatar }: ContactItemProps) => {
+  console.log(`contact with name: ${name}`);
   return (
     <Container>
       <AvatarContainer>
-        <Avatar width="60" height="60" isRounded />
+        <Avatar src={avatar} width="60" height="60" isRounded />
         {isOnline && <OnlineFlair />}
       </AvatarContainer>
       <TextContainer>

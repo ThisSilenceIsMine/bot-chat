@@ -1,12 +1,14 @@
 import styled from '@emotion/styled';
-import { Avatar } from 'components/Avatar/Avatar';
+import { Avatar } from '../Avatar/Avatar';
 import Image, { ImageLoaderProps } from 'next/image';
 
 interface UserInfoProps {
+  name: string;
+  avatar: string;
   className?: string;
 }
 
-export const UserInfo = ({ className }: UserInfoProps) => {
+export const UserInfo = ({ className, name, avatar }: UserInfoProps) => {
   return (
     <Container {...{ className }}>
       {/* <Image
@@ -16,9 +18,9 @@ export const UserInfo = ({ className }: UserInfoProps) => {
         src="42"
         alt="User's avatar"
       /> */}
-      <Avatar width="170" height="170" src="42" />
+      <Avatar width="170" height="170" src={avatar} />
       <TextContainer>
-        <UserName>Reverse Bot</UserName>
+        <UserName>{name}</UserName>
         <UserText>
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores
           magni animi tenetur odit laboriosam quam incidunt ullam repellat,
