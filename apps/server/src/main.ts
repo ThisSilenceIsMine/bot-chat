@@ -7,6 +7,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '@bot-chat/shared-types';
+import { connectionHandler } from './app/handlers/incomingConnection';
 
 const app = express();
 const server = http.createServer(app);
@@ -19,6 +20,7 @@ app.get('/api', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+  connectionHandler(io, socket);
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });

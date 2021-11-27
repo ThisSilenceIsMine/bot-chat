@@ -2,15 +2,16 @@ import { Server, Socket } from 'socket.io';
 import { Chance } from 'chance';
 
 import { UserModel } from '../db/UserSchema';
-import { usersMap } from '../usersMap';
+import { connectionsMap } from '../connectionsMap';
 import {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '@bot-chat/shared-types';
+import { contactsList } from '../contactsList';
 
 const chance = new Chance();
 
-export const connectionHandler = (
+export const connectionHandler = async (
   io: Server,
   socket: Socket<ClientToServerEvents, ServerToClientEvents>
 ) => {
@@ -19,23 +20,22 @@ export const connectionHandler = (
 
   if (typeof socket.handshake.query.name === 'string') {
     name = socket.handshake.query.name;
-    avatar = '42';
-    //TODO: handle loading user from DB
-    UserModel.findOne({ name })
-      .select('name avatar')
-      .exec((err, user) => {
-        if (!user?.name || !user?.avatar) {
-          if (err) {
-            console.error(err);
-          }
-          console.log(`User ${name} not Found, generating`);
-          const generatedUser = generateUser();
-          name = generatedUser.name;
-          avatar = generatedUser.avatar;
-          return;
-        }
-        (name = user.name), (avatar = user.avatar);
-      });
+
+    const user = await UserModel.findOne({ name }).select('name avatar').exec();
+
+    if (user) {
+      name = user.name;
+      avatar = user.avatar;
+    } else {
+      console.warn(`User ${name} not Found, generating`);
+
+      const generatedUser = generateUser();
+
+      name = generatedUser.name;
+      avatar = generatedUser.avatar;
+
+      UserModel.create({ name, avatar });
+    }
   } else {
     const user = generateUser();
 
@@ -45,13 +45,21 @@ export const connectionHandler = (
     UserModel.create({ name, avatar });
   }
 
-  usersMap.set(name, socket.id);
+  connectionsMap.set(name, socket.id);
 
   socket.emit('userData', name, avatar);
 
+  const contacts = await contactsList();
+
+  if (contacts) {
+    socket.emit('contacts', contacts);
+  } else {
+    console.error('Error fetching contacts!');
+  }
+
   const onDisconnect = () => {
     if (name) {
-      usersMap.delete(name);
+      connectionsMap.delete(name);
     }
   };
 
