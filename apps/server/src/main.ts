@@ -9,6 +9,8 @@ import {
 } from '@bot-chat/shared-types';
 import { connectionHandler } from './app/handlers/incomingConnection';
 import { messageHandler } from './app/handlers/messageHandler';
+import { EchoBot, registerBot } from './app/bots';
+import { connectionMiddleware } from './app/handlers/middleware/connection';
 const app = express();
 const server = http.createServer(app);
 
@@ -16,9 +18,9 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: { origin: '*' },
 });
 
-// app.get('/api', (req, res) => {
-//   res.sendFile(__dirname + '/assets/index.html');
-// });
+io.use(connectionMiddleware);
+
+registerBot(io, new EchoBot());
 
 io.on('connection', (socket) => {
   console.log('a user connected');

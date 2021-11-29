@@ -1,21 +1,18 @@
-import { Server, Socket } from 'socket.io';
+import { Server, Socket } from '../types';
 import { MessageModel } from '../db/MessageSchema';
-import {
-  ClientToServerEvents,
-  ServerToClientEvents,
-} from '@bot-chat/shared-types';
 import { connectionsMap, getUsername } from '../connectionsMap';
-import { getIdFromName, UserModel } from '../db/UserSchema';
-import { format } from 'util';
-import { Condition, ObjectId } from 'mongoose';
+import { getIdFromName } from '../db/UserSchema';
+import { botList } from '../bots';
 
 type PopulatedUser = { _id: string; name: string };
 
-export const messageHandler = async (
-  io: Server,
-  socket: Socket<ClientToServerEvents, ServerToClientEvents>
-) => {
+export const messageHandler = async (io: Server, socket: Socket) => {
   socket.on('message', async (message) => {
+    if (botList.map((x) => x.name).find((x) => x === message.reciever)) {
+      console.log('Message handled by bot!');
+      return;
+    }
+
     console.log(message);
 
     const sender = await getIdFromName(message.sender);
@@ -36,17 +33,14 @@ export const messageHandler = async (
   });
 
   socket.on('loadHistory', async (contact) => {
+    if (botList.map((x) => x.name).find((x) => x === contact)) {
+      console.log('History with bots not yet available!');
+      return socket.emit('messageHistory', []);
+    }
     const username = getUsername(socket.id);
     if (!username) {
       return console.error(`${username} is not online!`);
     }
-    // const userId = await UserModel.findOne({ name: username })
-    //   .select(['_id'])
-    //   .exec();
-
-    // const contactId = await UserModel.findOne({ name: contact })
-    //   .select(['_id'])
-    //   .exec();
 
     const userId: any = await getIdFromName(username);
     const contactId: any = await getIdFromName(contact);
@@ -54,7 +48,7 @@ export const messageHandler = async (
     if (!contactId || !userId) {
       console.log(`contact ${contact} user ${username}`);
       console.log(`contactID ${contactId} userID ${userId}`);
-      return;
+      return socket.emit('messageHistory', []);
     }
 
     const messageHistory = await MessageModel.find({
