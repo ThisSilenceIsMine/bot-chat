@@ -17,10 +17,7 @@ export function Index() {
 
   return (
     <StyledPage>
-      <UserInfo
-        name={selectedDialog?.name ?? 'None'}
-        avatar={selectedDialog?.avatar ?? '0'}
-      />
+      <UserInfo name={selectedDialog?.name} avatar={selectedDialog?.avatar} />
       <Contacts
         selected={selectedDialog}
         onSelect={(c) => setSelectedDialog(c)}

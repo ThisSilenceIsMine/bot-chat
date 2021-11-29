@@ -37,5 +37,5 @@ function imageLoader({ src, width }: ImageLoaderProps) {
       Math.random() * 1000
     )}`;
   }
-  return `https://picsum.photos/id/${src}/${width}`;
+  return `https://picsum.photos/seed/${src}/${width}`;
 }

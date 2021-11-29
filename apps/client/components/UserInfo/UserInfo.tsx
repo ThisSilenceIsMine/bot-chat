@@ -1,23 +1,24 @@
 import styled from '@emotion/styled';
 import { Avatar } from '../Avatar/Avatar';
-import Image, { ImageLoaderProps } from 'next/image';
 
 interface UserInfoProps {
-  name: string;
-  avatar: string;
+  name?: string;
+  avatar?: string;
   className?: string;
 }
 
 export const UserInfo = ({ className, name, avatar }: UserInfoProps) => {
+  console.log(avatar);
+  if (!name || !avatar) {
+    return (
+      <Container
+        {...{ className }}
+        style={{ backgroundColor: 'rgb(215, 223, 231)' }}
+      />
+    );
+  }
   return (
     <Container {...{ className }}>
-      {/* <Image
-        width="170"
-        height="170"
-        loader={imageLoader}
-        src="42"
-        alt="User's avatar"
-      /> */}
       <Avatar width="170" height="170" src={avatar} />
       <TextContainer>
         <UserName>{name}</UserName>
