@@ -29,15 +29,17 @@ export const Chat = ({ className, onSend, messages, disabled }: ChatProps) => {
     <Container className={className}>
       <MessageContainer>
         {messages &&
-          messages.map((val) => (
-            <Message
-              key={val.timeStamp}
-              timeStamp={val.timeStamp}
-              content={val.content}
-              sender={val.sender}
-              seenAt={val.seenAt}
-            />
-          ))}
+          messages
+            .sort((first, second) => +first.timeStamp - +second.timeStamp)
+            .map((val) => (
+              <Message
+                key={val.timeStamp}
+                timeStamp={val.timeStamp}
+                content={val.content}
+                sender={val.sender}
+                seenAt={val.seenAt}
+              />
+            ))}
         <div style={{ float: 'left', clear: 'both' }} ref={scrollRef} />
       </MessageContainer>
 

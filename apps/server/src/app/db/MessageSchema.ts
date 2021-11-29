@@ -1,4 +1,6 @@
 import { Schema, Types, model } from 'mongoose';
+import { getIdFromName } from './UserSchema';
+import { Message as MessageType } from '@bot-chat/shared-types';
 
 export interface Message {
   sender: Types.ObjectId;
@@ -17,3 +19,21 @@ const schema = new Schema<Message>({
 });
 
 export const MessageModel = model<Message>('Message', schema);
+
+export const saveMessage = async (message: MessageType) => {
+  console.log(message);
+
+  const sender = await getIdFromName(message.sender);
+  const reciever = await getIdFromName(message.reciever);
+
+  if (!sender && !reciever) {
+    console.log('Sender and / or reciever not found!');
+    return undefined;
+  }
+
+  return MessageModel.create({
+    ...message,
+    sender: sender,
+    reciever: reciever,
+  });
+};

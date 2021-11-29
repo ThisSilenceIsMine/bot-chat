@@ -1,5 +1,5 @@
 import { Server, Socket } from '../types';
-import { MessageModel } from '../db/MessageSchema';
+import { MessageModel, saveMessage } from '../db/MessageSchema';
 import { connectionsMap, getUsername } from '../connectionsMap';
 import { getIdFromName } from '../db/UserSchema';
 import { botList } from '../bots';
@@ -9,34 +9,19 @@ type PopulatedUser = { _id: string; name: string };
 export const messageHandler = async (io: Server, socket: Socket) => {
   socket.on('message', async (message) => {
     if (botList.map((x) => x.name).find((x) => x === message.reciever)) {
-      console.log('Message handled by bot!');
-      return;
+      return console.log('Message handled by bot!');
     }
 
     console.log(message);
 
-    const sender = await getIdFromName(message.sender);
-    const reciever = await getIdFromName(message.reciever);
+    saveMessage(message);
 
-    if (!sender || !reciever) {
-      console.log('Sender and / or reciever not found!');
-    }
-
-    await MessageModel.create({
-      ...message,
-      sender: sender,
-      reciever: reciever,
-    });
     if (connectionsMap[message.reciever]) {
       socket.to(connectionsMap[message.reciever]).emit('message', message);
     }
   });
 
   socket.on('loadHistory', async (contact) => {
-    if (botList.map((x) => x.name).find((x) => x === contact)) {
-      console.log('History with bots not yet available!');
-      return socket.emit('messageHistory', []);
-    }
     const username = getUsername(socket.id);
     if (!username) {
       return console.error(`${username} is not online!`);
@@ -53,8 +38,8 @@ export const messageHandler = async (io: Server, socket: Socket) => {
 
     const messageHistory = await MessageModel.find({
       $or: [
-        { sender: contactId, reciever: userId._id },
-        { sender: userId, reciever: contactId._id },
+        { sender: contactId, reciever: userId },
+        { sender: userId, reciever: contactId },
       ],
     })
       .select(['sender', 'reciever', 'seenAt', 'timeStamp', 'content'])
