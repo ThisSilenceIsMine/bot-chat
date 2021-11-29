@@ -52,14 +52,20 @@ export const connectionHandler = async (
   const contacts = await contactsList();
 
   if (contacts) {
-    socket.emit('contacts', contacts);
+    io.emit('contacts', contacts);
   } else {
-    console.error('Error fetching contacts!');
+    console.error('Failed fetching contacts!');
   }
 
-  const onDisconnect = () => {
+  const onDisconnect = async () => {
     if (name) {
       delete connectionsMap[name];
+      const contacts = await contactsList();
+      if (contacts) {
+        socket.broadcast.emit('contacts', contacts);
+      } else {
+        console.error('Failed fetching contacts!');
+      }
     }
   };
 
