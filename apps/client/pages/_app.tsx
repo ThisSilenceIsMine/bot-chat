@@ -1,8 +1,8 @@
-import { AppProps } from 'next/app';
-import Head from 'next/head';
-import { Header } from '../components/Header';
 import 'modern-normalize/modern-normalize.css';
 import './styles.css';
+import Head from 'next/head';
+import { AppProps } from 'next/app';
+import { Header } from '../components/Header';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (

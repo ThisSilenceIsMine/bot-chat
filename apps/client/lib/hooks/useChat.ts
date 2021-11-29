@@ -1,46 +1,28 @@
-import localforage from 'localforage';
-import { useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useEffect, useState } from 'react';
+import { UserContact } from '@bot-chat/shared-types';
+import { UserData, socket } from '../socket';
 
-import {
-  ServerToClientEvents,
-  ClientToServerEvents,
-  UserContact,
-} from '@bot-chat/shared-types';
-
-type UserData = { name: string; avatar: string };
-
-export const useChat = (uri?: string) => {
-  const socketRef =
-    useRef<Socket<ServerToClientEvents, ClientToServerEvents>>();
-
+export const useChat = () => {
   const [userData, setUserData] = useState<UserData>(null!);
   const [contacts, setContacts] = useState<UserContact[]>();
 
   useEffect(() => {
-    (async () => {
-      const storedUser = await localforage.getItem<UserData>('userData');
+    socket.on('userData', async (name, avatar) => {
+      if (!localStorage.getItem('username')) {
+        localStorage.setItem('username', name);
+        localStorage.setItem('avatar', avatar);
+      }
+      setUserData({ name, avatar });
+    });
 
-      socketRef.current = io(uri ?? 'localhost:3333', {
-        query: { name: storedUser?.name },
-      });
-
-      socketRef.current.on('userData', async (name, avatar) => {
-        if (!storedUser) {
-          await localforage.setItem('userData', { name, avatar });
-        }
-        setUserData({ name, avatar });
-        console.log(`name: ${storedUser?.name} av: ${storedUser?.avatar}`);
-      });
-
-      socketRef.current.on('contacts', (contacts) => {
-        setContacts(contacts);
-      });
-    })();
+    socket.on('contacts', (contacts) => {
+      setContacts(contacts);
+    });
     return () => {
-      socketRef.current?.disconnect();
+      socket.off('userData');
+      socket.off('contacts');
     };
-  }, [uri]);
+  }, []);
 
   return { userData, contacts };
 };

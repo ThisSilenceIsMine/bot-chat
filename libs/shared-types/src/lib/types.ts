@@ -10,4 +10,5 @@ export interface UserContact {
   name: string;
   avatar: string;
   isOnline?: boolean;
+  hasUnseenMessages?: boolean;
 }

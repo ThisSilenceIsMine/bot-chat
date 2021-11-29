@@ -4,8 +4,9 @@ import { ContactItem } from './ContactItem/ContactItem';
 import { Tab, TabPanel, TabList, TabsProps } from 'react-tabs';
 import { Input } from '../Input';
 import { UserContact } from '@bot-chat/shared-types';
+import { useState } from 'react';
 
-//Import Tabs dynamically to disable ssr (whitch results in error messages)
+//Import Tabs dynamically to disable ssr (which results in error messages)
 const Tabs = dynamic<TabsProps>(
   () => import('react-tabs').then((mod) => mod.Tabs),
   { ssr: false }
@@ -13,9 +14,16 @@ const Tabs = dynamic<TabsProps>(
 interface ContactsProps {
   contacts: UserContact[];
   myName: string;
+  onSelect?: (contact: UserContact) => void;
+  selected?: UserContact;
 }
 
-export const Contacts = ({ contacts, myName }: ContactsProps) => {
+export const Contacts = ({
+  contacts,
+  myName,
+  onSelect,
+  selected,
+}: ContactsProps) => {
   return (
     <Container>
       <Tabs>
@@ -28,10 +36,12 @@ export const Contacts = ({ contacts, myName }: ContactsProps) => {
             .filter((x) => x.name !== myName)
             .map((contact) => (
               <ContactItem
+                onClick={() => onSelect && onSelect(contact)}
                 key={contact.name}
                 name={contact.name}
                 avatar={contact.avatar}
                 isOnline={contact.isOnline}
+                isSelected={selected === contact}
               />
             ))}
         </TabPanel>

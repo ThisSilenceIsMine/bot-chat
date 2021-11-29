@@ -1,29 +1,45 @@
 import styled from '@emotion/styled';
 import { theme } from '../../../lib/theme';
 import { Arrow } from './Arrow';
-
+import { DateTime } from 'luxon';
+import { time } from 'console';
 export interface MessageProps {
   content: string;
   sender: string;
-  isSeen?: boolean;
-  // timeStamp: string;
-  // seen?: boolean;
+  timeStamp: string;
+  seenAt?: string;
 }
 
-export const Message = ({ content, sender, isSeen }: MessageProps) => {
-  const isRecieved = sender === 'you';
+export const Message = ({
+  content,
+  sender,
+  timeStamp,
+  seenAt,
+}: MessageProps) => {
+  const isRecieved = sender !== localStorage.getItem('username');
 
   return (
     <Container isLeft={isRecieved}>
       <Title>
-        <span>Some Bot</span>
-        <GrayLabel> 4:20PM </GrayLabel>
+        <span>{sender}</span>
+        <GrayLabel>
+          {' '}
+          {DateTime.fromSeconds(+timeStamp)
+            .toLocal()
+            .toLocaleString(DateTime.TIME_SIMPLE)}{' '}
+        </GrayLabel>
       </Title>
       <Text>
         {content}
         <Arrow isLeft={isRecieved} />
       </Text>
-      {!isRecieved && isSeen && <GrayLabel>Seen at 4:20 PM</GrayLabel>}
+      {!isRecieved && seenAt && (
+        <GrayLabel>
+          {DateTime.fromSeconds(+seenAt)
+            .toLocal()
+            .toLocaleString(DateTime.TIME_SIMPLE)}
+        </GrayLabel>
+      )}
     </Container>
   );
 };
@@ -38,7 +54,7 @@ const Container = styled.div<{ isLeft?: boolean }>`
   display: flex;
   flex-direction: column;
 
-  & > div:first-child {
+  & > div:first-of-type {
     background-color: ${(props) =>
       props.isLeft ? theme.colors.recievedMessage : theme.colors.sentMessage};
   }

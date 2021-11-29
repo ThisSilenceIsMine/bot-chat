@@ -7,12 +7,18 @@ export interface ContactItemProps {
   avatar: string;
   isOnline?: boolean;
   isSelected?: boolean;
+  onClick?: () => void;
 }
 
-export const ContactItem = ({ name, isOnline, avatar }: ContactItemProps) => {
-  console.log(`contact with name: ${name}`);
+export const ContactItem = ({
+  name,
+  isOnline,
+  avatar,
+  onClick,
+  isSelected,
+}: ContactItemProps) => {
   return (
-    <Container>
+    <Container {...{ onClick, isSelected }}>
       <AvatarContainer>
         <Avatar src={avatar} width="60" height="60" isRounded />
         {isOnline && <OnlineFlair />}
@@ -30,10 +36,12 @@ export const ContactItem = ({ name, isOnline, avatar }: ContactItemProps) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<{ isSelected?: boolean }>`
   display: flex;
   height: 62px;
   margin: 15px;
+  cursor: pointer;
+  ${(props) => (props.isSelected ? `background: lightGray;` : ``)}
 `;
 
 const TextContainer = styled.div`

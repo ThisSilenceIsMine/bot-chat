@@ -3,18 +3,29 @@ import { UserInfo as _UserInfo } from '../components/UserInfo';
 import { Contacts } from '../components/Contacts';
 import { Chat as _Chat } from '../components/Chat';
 import { useChat } from '../lib/hooks/useChat';
+import { useState } from 'react';
+import { UserContact } from '@bot-chat/shared-types';
+import { useDialog } from '../lib/hooks/useDialog';
 
 export function Index() {
   const { userData, contacts } = useChat();
-
+  const [selectedDialog, setSelectedDialog] = useState<UserContact | undefined>(
+    contacts ? contacts[0] : undefined
+  );
+  const { sendMessage, messages } = useDialog(selectedDialog);
   return (
     <StyledPage>
       <UserInfo
         name={userData?.name ?? 'None'}
         avatar={userData?.avatar ?? '0'}
       />
-      <Contacts myName={userData?.name} contacts={contacts ?? []} />
-      <Chat />
+      <Contacts
+        selected={selectedDialog}
+        onSelect={(c) => setSelectedDialog(c)}
+        myName={userData?.name}
+        contacts={contacts ?? []}
+      />
+      <Chat messages={messages} onSend={sendMessage} />
     </StyledPage>
   );
 }

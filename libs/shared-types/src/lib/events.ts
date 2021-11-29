@@ -10,5 +10,5 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   message: (message: Message) => void;
-  messagesViewed: (contact: string) => void;
+  loadHistory: (contact: string) => void;
 }

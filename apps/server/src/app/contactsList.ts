@@ -15,7 +15,7 @@ export const contactsList = async () => {
       return {
         name: user.name,
         avatar: user.avatar,
-        isOnline: connectionsMap.has(user.name),
+        isOnline: connectionsMap[user.name] !== undefined,
       };
     });
 

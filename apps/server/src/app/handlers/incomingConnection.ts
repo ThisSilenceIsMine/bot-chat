@@ -45,12 +45,12 @@ export const connectionHandler = async (
     UserModel.create({ name, avatar });
   }
 
-  connectionsMap.set(name, socket.id);
+  connectionsMap[name] = socket.id;
 
   socket.emit('userData', name, avatar);
 
   const contacts = await contactsList();
-  console.log(contacts);
+
   if (contacts) {
     socket.emit('contacts', contacts);
   } else {
@@ -59,7 +59,7 @@ export const connectionHandler = async (
 
   const onDisconnect = () => {
     if (name) {
-      connectionsMap.delete(name);
+      delete connectionsMap[name];
     }
   };
 

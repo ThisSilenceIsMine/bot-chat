@@ -2,32 +2,46 @@ import styled from '@emotion/styled';
 import { Input } from '../Input';
 import { theme } from '../../lib/theme';
 import { Message } from './Message/Message';
+import { socket } from '../../lib/socket';
+import { Message as MessageType } from '@bot-chat/shared-types';
+import { useEffect, useRef } from 'react';
 
 export interface ChatProps {
+  onSend: (content: string) => void;
+  messages: MessageType[];
   className?: string;
 }
-export const Chat = ({ className }: ChatProps) => {
+export const Chat = ({ className, onSend, messages }: ChatProps) => {
+  const inputRef = useRef<HTMLInputElement>(null!);
+  const scrollRef = useRef<HTMLDivElement>(null!);
+  const onClick = () => {
+    if (inputRef.current && inputRef.current?.value.replace(' ', '') !== '') {
+      onSend(inputRef.current.value);
+      inputRef.current.value = '';
+    }
+  };
+
+  useEffect(() => {
+    scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
   return (
     <Container className={className}>
       <MessageContainer>
-        <Message sender="me" isSeen content="Hello, darkness!" />
-        <Message
-          sender="you"
-          content="
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque eveniet nihil debitis expedita, quo id. Non animi quia qui eius voluptate adipisci delectus cumque est rem, totam, enim architecto magnam."
-        />
-        <Message sender="me" isSeen content="Hello, darkness!" />
-        <Message sender="me" isSeen content="Hello, darkness!" />
-        <Message sender="me" isSeen content="Hello, darkness!" />
-        <Message sender="me" isSeen content="Hello, darkness!" />
-        <Message sender="me" isSeen content="Hello, darkness!" />
-        <Message sender="me" isSeen content="Hello, darkness!" />
-        <Message sender="me" isSeen content="Hello, darkness!" />
+        {messages &&
+          messages.map((val) => (
+            <Message
+              key={val.timeStamp}
+              timeStamp={val.timeStamp}
+              content={val.content}
+              sender={val.sender}
+            />
+          ))}
+        <div style={{ float: 'left', clear: 'both' }} ref={scrollRef} />
       </MessageContainer>
 
       <Controls>
-        <StyledInput placeholder="Start chatting!" />
-        <SendButton> Send Message </SendButton>
+        <StyledInput ref={inputRef} placeholder="Start chatting!" />
+        <SendButton onClick={onClick}> Send Message </SendButton>
       </Controls>
     </Container>
   );
