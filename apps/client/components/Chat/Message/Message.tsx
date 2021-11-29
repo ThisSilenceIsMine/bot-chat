@@ -29,7 +29,9 @@ export const Message = ({
         </GrayLabel>
       </Title>
       <Text>
+        {/* <span style={{ maxWidth: '100%', overflowWrap: 'break-word' }}> */}
         {content}
+        {/* </span> */}
         <Arrow isLeft={isRecieved} />
       </Text>
       {!isRecieved && seenAt && (
@@ -47,13 +49,14 @@ export const Message = ({
 const Container = styled.div<{ isLeft?: boolean }>`
   ${(props) => (props.isLeft ? '' : 'align-self: flex-end;')}
   margin-right: 10px;
-  max-width: 50%;
-  min-width: 20%;
+  max-width: 30%;
+  min-width: 40%;
   margin-left: 10px;
   margin-top: 5px;
   display: flex;
   flex-direction: column;
-
+  /* overflow: hidden; */
+  overflow-wrap: break-word;
   & > div:first-of-type {
     background-color: ${(props) =>
       props.isLeft ? theme.colors.recievedMessage : theme.colors.sentMessage};
@@ -74,6 +77,8 @@ const Text = styled.div`
   position: relative;
   display: inline-block;
   width: 100%;
+  max-width: 100%;
+
   padding: 10px 20px;
   border-radius: 0 0 10px 10px;
   background-color: white;

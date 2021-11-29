@@ -92,4 +92,5 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   background-color: rgb(215, 223, 231);
+  max-width: 100%;
 `;
