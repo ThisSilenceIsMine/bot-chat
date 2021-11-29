@@ -13,6 +13,7 @@ import { EchoBot, registerBot } from './app/bots';
 import { connectionMiddleware } from './app/handlers/middleware/connection';
 import { ReverseBot } from './app/bots/ReverseBot';
 import { SpamBot } from './app/bots/SpamBot';
+import { IgnoreBot } from './app/bots/IgnoreBot';
 const app = express();
 const server = http.createServer(app);
 
@@ -25,6 +26,8 @@ io.use(connectionMiddleware);
 registerBot(io, new EchoBot());
 registerBot(io, new ReverseBot());
 registerBot(io, new SpamBot());
+registerBot(io, new IgnoreBot());
+
 io.on('connection', (socket) => {
   console.log('a user connected');
   connectionHandler(io, socket);
