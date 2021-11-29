@@ -5,7 +5,9 @@ import {
   ServerToClientEvents,
 } from '@bot-chat/shared-types';
 import { connectionsMap, getUsername } from '../connectionsMap';
-import { UserModel } from '../db/UserSchema';
+import { getIdFromName, UserModel } from '../db/UserSchema';
+import { format } from 'util';
+import { Condition, ObjectId } from 'mongoose';
 
 type PopulatedUser = { _id: string; name: string };
 
@@ -15,13 +17,9 @@ export const messageHandler = async (
 ) => {
   socket.on('message', async (message) => {
     console.log(message);
-    const sender = await UserModel.findOne({ name: message.sender })
-      .select(['_id'])
-      .exec();
 
-    const reciever = await UserModel.findOne({ name: message.reciever })
-      .select(['_id'])
-      .exec();
+    const sender = await getIdFromName(message.sender);
+    const reciever = await getIdFromName(message.reciever);
 
     if (!sender || !reciever) {
       console.log('Sender and / or reciever not found!');
@@ -29,8 +27,8 @@ export const messageHandler = async (
 
     await MessageModel.create({
       ...message,
-      sender: sender?._id,
-      reciever: reciever?._id,
+      sender: sender,
+      reciever: reciever,
     });
     if (connectionsMap[message.reciever]) {
       socket.to(connectionsMap[message.reciever]).emit('message', message);
@@ -39,14 +37,19 @@ export const messageHandler = async (
 
   socket.on('loadHistory', async (contact) => {
     const username = getUsername(socket.id);
+    if (!username) {
+      return console.error(`${username} is not online!`);
+    }
+    // const userId = await UserModel.findOne({ name: username })
+    //   .select(['_id'])
+    //   .exec();
 
-    const userId = await UserModel.findOne({ name: username })
-      .select(['_id'])
-      .exec();
+    // const contactId = await UserModel.findOne({ name: contact })
+    //   .select(['_id'])
+    //   .exec();
 
-    const contactId = await UserModel.findOne({ name: contact })
-      .select(['_id'])
-      .exec();
+    const userId: any = await getIdFromName(username);
+    const contactId: any = await getIdFromName(contact);
 
     if (!contactId || !userId) {
       console.log(`contact ${contact} user ${username}`);
@@ -56,8 +59,8 @@ export const messageHandler = async (
 
     const messageHistory = await MessageModel.find({
       $or: [
-        { sender: contactId._id, reciever: userId._id },
-        { sender: userId._id, reciever: contactId._id },
+        { sender: contactId, reciever: userId._id },
+        { sender: userId, reciever: contactId._id },
       ],
     })
       .select(['sender', 'reciever', 'seenAt', 'timeStamp', 'content'])
@@ -75,5 +78,29 @@ export const messageHandler = async (
         seenAt: message.seenAt,
       }))
     );
+  });
+
+  socket.on('messagesRead', async (from) => {
+    const username = getUsername(socket.id);
+    if (!username) {
+      return console.error('Unable to find user!');
+    }
+    console.log(`${username} read all messages from ${from}!`);
+
+    const userId: any = await getIdFromName(username);
+    const fromId: any = await getIdFromName(from);
+
+    if (!userId || !fromId) {
+      return console.error('Users not found!');
+    }
+    await MessageModel.updateMany(
+      { sender: fromId, reciever: userId, seenAt: { $exists: false } },
+      { $set: { seenAt: Date.now().toString() } }
+    ).exec();
+
+    if (connectionsMap[from] && username) {
+      console.log('emitting messageViewed');
+      socket.to(connectionsMap[from]).emit('messageViewed', username);
+    }
   });
 };

@@ -23,10 +23,9 @@ export const Message = ({
       <Title>
         <span>{sender}</span>
         <GrayLabel>
-          {' '}
-          {DateTime.fromSeconds(+timeStamp)
+          {DateTime.fromMillis(+timeStamp)
             .toLocal()
-            .toLocaleString(DateTime.TIME_SIMPLE)}{' '}
+            .toLocaleString(DateTime.TIME_24_SIMPLE)}
         </GrayLabel>
       </Title>
       <Text>
@@ -35,9 +34,10 @@ export const Message = ({
       </Text>
       {!isRecieved && seenAt && (
         <GrayLabel>
-          {DateTime.fromSeconds(+seenAt)
+          Seen at{' '}
+          {DateTime.fromMillis(+seenAt)
             .toLocal()
-            .toLocaleString(DateTime.TIME_SIMPLE)}
+            .toLocaleString(DateTime.TIME_24_SIMPLE)}
         </GrayLabel>
       )}
     </Container>

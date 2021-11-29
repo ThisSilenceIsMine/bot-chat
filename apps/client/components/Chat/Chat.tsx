@@ -35,6 +35,7 @@ export const Chat = ({ className, onSend, messages, disabled }: ChatProps) => {
               timeStamp={val.timeStamp}
               content={val.content}
               sender={val.sender}
+              seenAt={val.seenAt}
             />
           ))}
         <div style={{ float: 'left', clear: 'both' }} ref={scrollRef} />

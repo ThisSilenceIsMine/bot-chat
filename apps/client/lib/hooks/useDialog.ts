@@ -9,6 +9,7 @@ export const useDialog = (contact: UserContact | undefined) => {
     setMessages([]);
     if (contact) {
       socket.emit('loadHistory', contact.name);
+      socket.emit('messagesRead', contact.name);
     }
   }, [contact]);
 
@@ -20,6 +21,7 @@ export const useDialog = (contact: UserContact | undefined) => {
       console.log(`new Message from: ${message.sender}`);
       if (message.sender === contact?.name) {
         setMessages((items) => [...items, message]);
+        socket.emit('messagesRead', message.sender);
       }
     });
     return () => {
@@ -34,14 +36,16 @@ export const useDialog = (contact: UserContact | undefined) => {
     if (!username) {
       return;
     }
-    if (contact) {
-      socket.emit('message', {
-        content,
-        reciever: contact.name,
-        sender: username,
-        timeStamp: Date.now().toString(),
-      });
-    }
+    if (!contact) return;
+
+    const message: Message = {
+      content,
+      reciever: contact.name,
+      sender: username,
+      timeStamp: Date.now().toString(),
+    };
+    socket.emit('message', message);
+    setMessages((items) => [...items, message]);
   };
 
   return { sendMessage, messages };
