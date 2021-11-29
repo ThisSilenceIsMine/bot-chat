@@ -10,8 +10,9 @@ export interface ChatProps {
   onSend: (content: string) => void;
   messages: MessageType[];
   className?: string;
+  disabled?: boolean;
 }
-export const Chat = ({ className, onSend, messages }: ChatProps) => {
+export const Chat = ({ className, onSend, messages, disabled }: ChatProps) => {
   const inputRef = useRef<HTMLInputElement>(null!);
   const scrollRef = useRef<HTMLDivElement>(null!);
   const onClick = () => {
@@ -40,8 +41,14 @@ export const Chat = ({ className, onSend, messages }: ChatProps) => {
       </MessageContainer>
 
       <Controls>
-        <StyledInput ref={inputRef} placeholder="Start chatting!" />
-        <SendButton onClick={onClick}> Send Message </SendButton>
+        <StyledInput
+          disabled={disabled}
+          ref={inputRef}
+          placeholder="Start chatting!"
+        />
+        <SendButton disabled={disabled} onClick={onClick}>
+          Send Message
+        </SendButton>
       </Controls>
     </Container>
   );

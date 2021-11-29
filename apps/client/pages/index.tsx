@@ -25,7 +25,11 @@ export function Index() {
         myName={userData?.name}
         contacts={contacts ?? []}
       />
-      <Chat messages={messages} onSend={sendMessage} />
+      <Chat
+        messages={messages}
+        onSend={sendMessage}
+        disabled={!selectedDialog}
+      />
     </StyledPage>
   );
 }
