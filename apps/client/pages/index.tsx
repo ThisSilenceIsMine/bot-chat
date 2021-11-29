@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
+import { UserContact } from '@bot-chat/shared-types';
 import { UserInfo as _UserInfo } from '../components/UserInfo';
 import { Contacts } from '../components/Contacts';
 import { Chat as _Chat } from '../components/Chat';
-import { useChat } from '../lib/hooks/useChat';
-import { useState } from 'react';
-import { UserContact } from '@bot-chat/shared-types';
-import { useDialog } from '../lib/hooks/useDialog';
+import { useChat, useDialog } from '../lib/hooks';
 
 export function Index() {
   const { contacts } = useChat();

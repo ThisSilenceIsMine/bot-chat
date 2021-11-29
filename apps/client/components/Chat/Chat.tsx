@@ -14,6 +14,7 @@ export interface ChatProps {
 }
 export const Chat = ({ className, onSend, messages, disabled }: ChatProps) => {
   const inputRef = useRef<HTMLInputElement>(null!);
+  const buttonRef = useRef<HTMLButtonElement>(null!);
   const scrollRef = useRef<HTMLDivElement>(null!);
   const onClick = () => {
     if (inputRef.current && inputRef.current?.value.replace(' ', '') !== '') {
@@ -47,9 +48,14 @@ export const Chat = ({ className, onSend, messages, disabled }: ChatProps) => {
         <StyledInput
           disabled={disabled}
           ref={inputRef}
+          onKeyUp={(e) => {
+            if (e.key === 'Enter') {
+              buttonRef.current.click();
+            }
+          }}
           placeholder="Start chatting!"
         />
-        <SendButton disabled={disabled} onClick={onClick}>
+        <SendButton ref={buttonRef} disabled={disabled} onClick={onClick}>
           Send Message
         </SendButton>
       </Controls>

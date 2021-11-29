@@ -1,7 +1,6 @@
 import { Server, Socket } from '../types';
-import { MessageModel, saveMessage } from '../db/MessageSchema';
+import { MessageModel, saveMessage, getIdFromName } from '../db';
 import { connectionsMap, getUsername } from '../connectionsMap';
-import { getIdFromName } from '../db/UserSchema';
 import { botList } from '../bots';
 
 type PopulatedUser = { _id: string; name: string };
