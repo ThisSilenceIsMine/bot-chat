@@ -5,7 +5,7 @@ export interface ServerToClientEvents {
   message: (message: Message) => void;
   userData: (name: string, avatar: string) => void;
   messageHistory: (history: Message[]) => void;
-  messageViewed: (by: string) => void;
+  messageViewed: (by: string, at: string) => void;
   contacts: (list: UserContact[]) => void;
 }
 

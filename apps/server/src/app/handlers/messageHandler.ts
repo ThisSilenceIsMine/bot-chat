@@ -93,14 +93,16 @@ export const messageHandler = async (
     if (!userId || !fromId) {
       return console.error('Users not found!');
     }
+    const seenAt = Date.now().toString();
+
     await MessageModel.updateMany(
       { sender: fromId, reciever: userId, seenAt: { $exists: false } },
-      { $set: { seenAt: Date.now().toString() } }
+      { $set: { seenAt } }
     ).exec();
 
     if (connectionsMap[from] && username) {
       console.log('emitting messageViewed');
-      socket.to(connectionsMap[from]).emit('messageViewed', username);
+      socket.to(connectionsMap[from]).emit('messageViewed', username, seenAt);
     }
   });
 };

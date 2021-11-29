@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Message, UserContact } from '@bot-chat/shared-types';
 import { socket } from '../socket';
+import { textSpanIsEmpty } from 'typescript';
 
 export const useDialog = (contact: UserContact | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -24,9 +25,20 @@ export const useDialog = (contact: UserContact | undefined) => {
         socket.emit('messagesRead', message.sender);
       }
     });
+    socket.on('messageViewed', (by, at) => {
+      if (contact?.name === by) {
+        setMessages((items) =>
+          items.map((message) => {
+            message.seenAt = message.seenAt ?? at;
+            return message;
+          })
+        );
+      }
+    });
     return () => {
       socket.off('message');
       socket.off('messageHistory');
+      socket.off('messageViewed');
     };
   }, [contact]);
 
