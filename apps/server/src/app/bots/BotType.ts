@@ -5,7 +5,7 @@ interface BotBase {
   /**
    * Perform action in response to user's message
    */
-  respond?: (message: string) => string;
+  respond?: (message: string) => string | Promise<string>;
   /**
    * Perform action independent to user's actions
    */

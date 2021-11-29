@@ -34,7 +34,7 @@ export const registerBot = (io: Server, bot: Bot) => {
       });
     }
 
-    const onMessage = (message: Message) => {
+    const onMessage = async (message: Message) => {
       console.log(message);
       if (!bot.respond) {
         return;
@@ -48,7 +48,7 @@ export const registerBot = (io: Server, bot: Bot) => {
         sender: bot.name,
         reciever: username,
         timeStamp: Date.now().toString(),
-        content: bot.respond(message.content),
+        content: await bot.respond(message.content),
       });
     };
 

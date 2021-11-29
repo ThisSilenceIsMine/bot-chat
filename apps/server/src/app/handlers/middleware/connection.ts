@@ -1,5 +1,5 @@
 import { Chance } from 'chance';
-import { Server, Socket } from '../../types';
+import { Socket } from '../../types';
 
 import { UserModel } from '../../db/UserSchema';
 import { connectionsMap } from '../../connectionsMap';
