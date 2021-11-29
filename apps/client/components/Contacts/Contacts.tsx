@@ -24,6 +24,10 @@ export const Contacts = ({
   onSelect,
   selected,
 }: ContactsProps) => {
+  const _contacts = contacts.filter(
+    (x) => x.name !== localStorage.getItem('username')
+  );
+
   return (
     <Container>
       <Tabs>
@@ -32,8 +36,8 @@ export const Contacts = ({
           <Tab>All</Tab>
         </TabList>
         <TabPanel>
-          {contacts
-            .filter((x) => x.name !== myName)
+          {_contacts
+            .filter((x) => x.isOnline)
             .map((contact) => (
               <ContactItem
                 onClick={() => onSelect && onSelect(contact)}
@@ -45,7 +49,20 @@ export const Contacts = ({
               />
             ))}
         </TabPanel>
-        <TabPanel>Hello!</TabPanel>
+        <TabPanel>
+          {_contacts
+            .filter((x) => !x.isOnline)
+            .map((contact) => (
+              <ContactItem
+                onClick={() => onSelect && onSelect(contact)}
+                key={contact.name}
+                name={contact.name}
+                avatar={contact.avatar}
+                isOnline={contact.isOnline}
+                isSelected={selected === contact}
+              />
+            ))}
+        </TabPanel>
       </Tabs>
       <Input placeholder="Search..." />
     </Container>
