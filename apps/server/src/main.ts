@@ -8,12 +8,16 @@ import {
   ServerToClientEvents,
 } from '@bot-chat/shared-types';
 import { connectionHandler } from './app/handlers/incomingConnection';
-import { messageHandler } from './app/handlers/messageHandler';
-import { EchoBot, registerBot } from './app/bots';
 import { connectionMiddleware } from './app/handlers/middleware/connection';
-import { ReverseBot } from './app/bots/ReverseBot';
-import { SpamBot } from './app/bots/SpamBot';
-import { IgnoreBot } from './app/bots/IgnoreBot';
+import { messageHandler } from './app/handlers/messageHandler';
+import {
+  EchoBot,
+  ReverseBot,
+  SpamBot,
+  IgnoreBot,
+  registerBot,
+} from './app/bots';
+
 const app = express();
 const server = http.createServer(app);
 

@@ -4,6 +4,9 @@ import { Server } from '../types';
 import { Bot } from './BotType';
 
 export * from './EchoBot';
+export * from './IgnoreBot';
+export * from './ReverseBot';
+export * from './SpamBot';
 
 export const botList: UserContact[] = [];
 

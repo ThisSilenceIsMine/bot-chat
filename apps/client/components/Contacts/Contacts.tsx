@@ -13,20 +13,19 @@ const Tabs = dynamic<TabsProps>(
 );
 interface ContactsProps {
   contacts: UserContact[];
-  myName: string;
   onSelect?: (contact: UserContact) => void;
   selected?: UserContact;
 }
 
-export const Contacts = ({
-  contacts,
-  myName,
-  onSelect,
-  selected,
-}: ContactsProps) => {
+export const Contacts = ({ contacts, onSelect, selected }: ContactsProps) => {
+  const [search, setSearch] = useState('');
+
   const _contacts = contacts.filter(
     (x) => x.name !== localStorage.getItem('username')
   );
+
+  const filterByQuery = (x: UserContact) =>
+    x.name.toLowerCase().includes(search.toLowerCase());
 
   return (
     <Container>
@@ -37,7 +36,8 @@ export const Contacts = ({
         </TabList>
         <TabPanel>
           {_contacts
-            .filter((x) => x.isOnline)
+            .filter((x: UserContact) => x.isOnline)
+            .filter(filterByQuery)
             .map((contact) => (
               <ContactItem
                 onClick={() => onSelect && onSelect(contact)}
@@ -50,21 +50,23 @@ export const Contacts = ({
             ))}
         </TabPanel>
         <TabPanel>
-          {_contacts
-            .filter((x) => !x.isOnline)
-            .map((contact) => (
-              <ContactItem
-                onClick={() => onSelect && onSelect(contact)}
-                key={contact.name}
-                name={contact.name}
-                avatar={contact.avatar}
-                isOnline={contact.isOnline}
-                isSelected={selected === contact}
-              />
-            ))}
+          {_contacts.filter(filterByQuery).map((contact) => (
+            <ContactItem
+              onClick={() => onSelect && onSelect(contact)}
+              key={contact.name}
+              name={contact.name}
+              avatar={contact.avatar}
+              isOnline={contact.isOnline}
+              isSelected={selected === contact}
+            />
+          ))}
         </TabPanel>
       </Tabs>
-      <Input placeholder="Search..." />
+      <Input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search..."
+      />
     </Container>
   );
 };
