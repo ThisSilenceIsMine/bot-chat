@@ -34,41 +34,40 @@ export const registerBot = async (io: Server, bot: Bot) => {
 
   io.use((socket, next) => {
     if (bot.act) {
-      bot.act().subscribe({
-        next(message) {
-          const username = getUsername(socket.id);
-          if (!username) {
-            console.log('No user found');
-            return next();
-          }
+      bot.act((message: string) => {
+        const username = getUsername(socket.id);
+        if (!username) {
+          console.log('No user found');
+          return;
+        }
 
-          const messageObj = {
-            sender: bot.name,
-            reciever: username,
-            timeStamp: Date.now().toString(),
-            content: message,
-          };
-          saveMessage(messageObj);
-          socket.broadcast.emit('message', messageObj);
-        },
+        const messageObj = {
+          sender: bot.name,
+          reciever: username,
+          timeStamp: Date.now().toString(),
+          content: message,
+        };
+        saveMessage(messageObj);
+        socket.broadcast.emit('message', messageObj);
       });
     }
 
     const onMessage = async (message: Message) => {
-      if (!bot.respond) {
+      if (message.reciever !== bot.name) {
         return;
       }
 
-      if (message.reciever !== bot.name) {
+      const username = getUsername(socket.id);
+
+      if (!username) {
+        console.log('No user found');
         return;
       }
 
       saveMessage(message);
 
-      const username = getUsername(socket.id);
-      if (!username) {
-        console.log('No user found');
-        return next();
+      if (!bot.respond) {
+        return;
       }
 
       const messageObj = {
