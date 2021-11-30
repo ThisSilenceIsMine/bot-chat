@@ -1,5 +1,3 @@
-import { Observable } from 'rxjs';
-
 interface BotBase {
   name: string;
   /**
@@ -9,17 +7,8 @@ interface BotBase {
   /**
    * Perform action independent to user's actions
    */
-  act?: () => Observable<string>;
+  // act?: () => Observable<string>;
+  act?: (cb: (message: string) => void) => void;
 }
-
-// interface ActBot extends BotBase {
-//   act: () => string;
-// }
-
-// interface ResponseBot extends BotBase {
-//   respond: () => string;
-// }
-
-// export type Bot = ActBot | ResponseBot | (ActBot & ResponseBot);
 
 export type Bot = BotBase;

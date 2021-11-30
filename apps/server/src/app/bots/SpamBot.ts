@@ -1,5 +1,4 @@
 import { Bot } from './BotType';
-import { Observable } from 'rxjs';
 import { Chance } from 'chance';
 
 const chance = new Chance();
@@ -11,15 +10,13 @@ export class SpamBot implements Bot {
     this.name = 'Spam Bot';
   }
 
-  act(): Observable<string> {
-    return new Observable((subscriber) => {
-      (function loop() {
-        const rand = Math.round(Math.random() * (120000 - 10000)) + 10000;
-        setTimeout(() => {
-          subscriber.next(chance.sentence());
-          loop();
-        }, rand);
-      })();
-    });
+  act(cb: (message: string) => void) {
+    (function loop() {
+      const rand = Math.round(Math.random() * (120000 - 10000)) + 10000;
+      setTimeout(() => {
+        cb(chance.sentence());
+        loop();
+      }, rand);
+    })();
   }
 }
